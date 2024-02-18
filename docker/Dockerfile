@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG REPOSITORY=an0r4k0/raione-reward-distribution
 LABEL org.opencontainers.image.source https://github.com/$REPOSITORY
 
@@ -17,17 +19,16 @@ RUN apt-get update && apt-get install -y \
     php8.1-gmp
 
 # Copy the application
-COPY builds/application /usr/bin/application
-RUN chmod +x /usr/bin/application
+COPY builds/application /root/application
 
 # Copy the entrypoint script
-COPY ./docker/entry.sh /usr/bin/entry.sh
-RUN chmod +x /usr/bin/entry.sh
+COPY ./docker/entry.sh /root/entry.sh
+RUN chmod +x /root/entry.sh
 
 # Set the working directory
 WORKDIR /root
 USER root
 
 # Set the entrypoint
-ENTRYPOINT ["/usr/bin/entry.sh"]
+ENTRYPOINT ["/root/entry.sh"]
 
