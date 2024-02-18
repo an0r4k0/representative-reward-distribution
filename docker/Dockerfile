@@ -16,10 +16,15 @@ RUN apt-get update && apt-get install -y \
     php8.1-sqlite3 \
     php8.1-gmp
 
+# Copy the application
+COPY builds/application /usr/bin/application
+RUN chmod +x /usr/bin/application
+
 # Copy the entrypoint script
-COPY entry.sh /usr/bin/entry.sh
+COPY ./docker/entry.sh /usr/bin/entry.sh
 RUN chmod +x /usr/bin/entry.sh
 
+# Set the working directory
 WORKDIR /root
 USER root
 
