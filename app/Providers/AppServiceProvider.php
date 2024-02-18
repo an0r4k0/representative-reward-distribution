@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Phar;
-use Yosymfony\Toml\Toml;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,21 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Let's read and store the config file
-        config(['tribe' => $this->getConfigFileContent()]);
+        $this->setTimezone();
 
-        // Set the app timezone
-        if (config('tribe.general.timezone')) {
-            config(['app.timezone' => config('tribe.general.timezone')]);
-            date_default_timezone_set(config('app.timezone', 'UTC'));
-        }
+        $this->setLogging();
 
-        // Set logging file path
-        $logfile = Phar::running()
-            ? $_SERVER['HOME'] . '/.paw-tribe/paw-tribe.log'
-            : config('logging.channels.single.path');
-
-        config(['logging.channels.single.path' => $logfile]);
+        $this->setDatabaseConnection();
     }
 
     /**
@@ -43,11 +32,38 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Get config file content
+     * Set the timezone
      */
-    protected function getConfigFileContent()
+    protected function setTimezone()
     {
-        $path = config('path.directory') . '/' . config('path.config_filename');
-        return file_exists($path) ? Toml::parseFile($path) : [];
+        // Set the app timezone
+        $timezone = config('settings.timezone', 'UTC');
+        config(['app.timezone' => $timezone]);
+        date_default_timezone_set($timezone);
+    }
+
+    /**
+     * Set the logging file
+     */
+    protected function setLogging()
+    {
+        // Set logging file path
+        $logfile = Phar::running()
+            ? config('settings.directory') . 'application.log'
+            : config('logging.channels.single.path');
+
+        config(['logging.channels.single.path' => $logfile]);
+    }
+
+    /**
+     * Set the database path
+     */
+    protected function setDatabaseConnection()
+    {
+        $database = Phar::running()
+            ? config('settings.directory') . 'database.sqlite'
+            : config('database.connections.sqlite.database');
+
+        config(['database.connections.sqlite.database' => $database]);
     }
 }

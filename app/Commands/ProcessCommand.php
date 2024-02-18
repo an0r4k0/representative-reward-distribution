@@ -30,16 +30,11 @@ class ProcessCommand extends Command
     protected $node;
 
     /**
-     * Tribe
-     */
-    protected $tribe;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->node = new Node(config('tribe.rpc.address'));
+        $this->node = new Node(config('settings.node.rpc'));
 
         parent::__construct();
     }
@@ -89,8 +84,8 @@ class ProcessCommand extends Command
 
         // Let's send the amount
         $this->node->send(
-            config('tribe.tribe.wallet_id'),
-            config('tribe.tribe.address'),
+            config('settings.node.wallet_id'),
+            config('settings.node.address'),
             $payout->address,
             $payout->amount,
             $payout->tx_id

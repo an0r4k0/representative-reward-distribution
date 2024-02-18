@@ -35,17 +35,17 @@ class DistributeCommand extends Command
     protected $node;
 
     /**
-     * Tribe
+     * Representative
      */
-    protected $tribe;
+    protected $representative;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->node = new Node(config('tribe.rpc.address'));
-        $this->tribe = new Address(config('tribe.tribe.address'), $this->node);
+        $this->node = new Node(config('settings.node.rpc'));
+        $this->representative = new Address(config('settings.node.address'), $this->node);
 
         parent::__construct();
     }
@@ -83,16 +83,16 @@ class DistributeCommand extends Command
         // Let's create the reward
         $reward = $this->createReward($forManagementCost, $forDelegators);
 
-        $tribeManagementCostAddress = config('tribe.costs.address');
+        $representativeManagementCostAddress = config('settings.management.address');
         if (gmp_cmp($forManagementCost, 0) > 0) {
-            $this->addPayout($tribeManagementCostAddress, $forManagementCost);
+            $this->addPayout($representativeManagementCostAddress, $forManagementCost);
         }
 
         // Let's distribute all remainging amount to distributors
         // If there aren't any then distribute all to managemnent
         $delegators = $this->getElegibleDelegators($reward);
         if ($delegators->isEmpty() && gmp_cmp($forDelegators, 0) > 0) {
-            return $this->addPayout($tribeManagementCostAddress, $forDelegators);
+            return $this->addPayout($representativeManagementCostAddress, $forDelegators);
         }
 
         if (gmp_cmp($forDelegators, 0) > 0) {
@@ -106,7 +106,7 @@ class DistributeCommand extends Command
     protected function calculateManagementCostPayout($amount)
     {
         // GMP only supports integers
-        $managementPercentage = config('tribe.costs.percentage') * 100;
+        $managementPercentage = config('settings.management.percentage');
         $cost = gmp_mul($amount, $managementPercentage);
         $cost = gmp_div($cost, 100);
         return gmp_strval($cost);
@@ -239,7 +239,7 @@ class DistributeCommand extends Command
      */
     protected function isBalanceMoreThanMinimum($balance)
     {
-        return gmp_cmp($balance, config('tribe.payout.min_delegation', 0)) >= 0;
+        return gmp_cmp($balance, config('settings.delegator.min_balance', 0)) >= 0;
     }
 
     /**
@@ -262,7 +262,7 @@ class DistributeCommand extends Command
      */
     protected function getTribeBalance()
     {
-        $balance = $this->tribe->balance();
+        $balance = $this->representative->balance();
         return $balance['balance'];
     }
 }
