@@ -19,5 +19,5 @@ return [
 
     'timezone' => env('TIMEZONE', 'UTC'),
 
-    'directory' => $_SERVER['HOME'] . '/raione/',
+    'directory' => $_SERVER['HOME'] . '/rrd/',
 ];

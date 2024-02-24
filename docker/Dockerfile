@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG REPOSITORY=an0r4k0/raione-reward-distribution
+ARG REPOSITORY=an0r4k0/representative-reward-distribution
 LABEL org.opencontainers.image.source https://github.com/$REPOSITORY
 
 # Install dependencies
