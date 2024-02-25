@@ -59,7 +59,7 @@ steps:
       - name: cache
         path: /cache
     depends_on:
-      - composer
+      - build
 
 volumes:
   - name: cache
