@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => 'PAW Tribe',
+    'name' => 'Representative Reward Distribution',
 
     /*
     |--------------------------------------------------------------------------

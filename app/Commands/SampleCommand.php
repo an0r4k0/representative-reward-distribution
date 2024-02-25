@@ -26,19 +26,22 @@ class SampleCommand extends Command
     protected $description = 'Sample tribe delegators';
 
     /**
-     * Tribe
+     * Node
      */
-    protected $tribe;
+    protected $node;
+
+    /**
+     * Representative
+     */
+    protected $representative;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->tribe = new Address(
-            config('tribe.tribe.address'),
-            new Node(config('tribe.rpc.address')),
-        );
+        $this->node = new Node(config('settings.node.rpc'));
+        $this->representative = new Address(config('settings.node.address'), $this->node);
 
         parent::__construct();
     }
@@ -51,7 +54,7 @@ class SampleCommand extends Command
      */
     public function schedule(Schedule $schedule): void
     {
-        $interval = config('tribe.tribe.sampling_interval');
+        $interval = config('settings.delegator.sampling_interval');
         $schedule->command(static::class)->cron("*/{$interval} * * * *");
     }
 
@@ -62,7 +65,7 @@ class SampleCommand extends Command
      */
     public function handle()
     {
-        $this->tribe->delegators()
+        $this->representative->delegators()
             ->tap(function ($delegators) {
                 $delegators
                     ->pluck('address')

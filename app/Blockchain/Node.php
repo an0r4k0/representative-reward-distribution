@@ -29,12 +29,14 @@ class Node
         ]);
 
         $body = json_decode($response->getBody(), true);
-        return collect($body['delegators'])
-            ->map(fn ($value, $key) => [
-                'address' => $key,
-                'balance' => $value
-            ])
-            ->values();
+        return !empty($body['delegators'])
+            ? collect($body['delegators'])
+                ->map(fn ($value, $key) => [
+                    'address' => $key,
+                    'balance' => $value
+                ])
+                ->values()
+            : collect([]);
     }
 
     /**

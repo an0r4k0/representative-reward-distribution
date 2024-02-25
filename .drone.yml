@@ -1,0 +1,67 @@
+kind: pipeline
+type: docker
+name: build
+
+trigger:
+  event:
+    - tag
+
+steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    environment:
+      CACHE_TAG: 'build'
+    settings:
+      restore: true
+      cache_key: [DRONE_REPO_OWNER, DRONE_REPO_NAME, CACHE_TAG]
+      mount:
+        - ./vendor
+    volumes:
+      - name: cache
+        path: /cache
+
+  - name: build
+    image: php:8.1-alpine
+    commands:
+      - wget https://getcomposer.org/download/2.7.1/composer.phar
+      - mv composer.phar /usr/local/bin/composer
+      - chmod +x /usr/local/bin/composer
+      - composer install --ignore-platform-reqs --no-interaction
+      - php application app:build --build-version=${DRONE_TAG}
+    depends_on:
+      - restore-cache
+
+  - name: build-docker-image
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DOCKER_USERNAME
+      password:
+        from_secret: DOCKER_PASSWORD
+      dockerfile: ./docker/Dockerfile
+      repo: an0r4k0/representative-reward-distribution
+      tags:
+        - latest
+        - ${DRONE_TAG:1}
+    depends_on:
+      - build
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    environment:
+      CACHE_TAG: 'build'
+    settings:
+      rebuild: true
+      cache_key: [DRONE_REPO_OWNER, DRONE_REPO_NAME, CACHE_TAG]
+      mount:
+        - ./vendor
+    volumes:
+      - name: cache
+        path: /cache
+    depends_on:
+      - build
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache

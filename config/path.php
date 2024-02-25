@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'directory' => $_SERVER['HOME'] . '/.paw-tribe',
+    'directory' => $_SERVER['HOME'] . '/rrd',
     'config_filename' => 'config.toml',
 ];
