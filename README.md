@@ -1,4 +1,4 @@
-# Paw Tribe Cli
+# Representative Reward Distribution
 
 A simple tribe reward system: it will sample all the tribe delegators balances and reward them fairly.
 
