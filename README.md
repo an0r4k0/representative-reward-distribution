@@ -4,43 +4,44 @@ A simple tribe reward system: it will sample all the tribe delegators balances a
 
 ## Installation 
 
-Install PHP and all needed extensions:
+Run the docker image with the following command:
 ```bash
-sudo apt-get install --no-install-recommends php8.1
-sudo apt-get install -y php8.1 php8.1-cli php8.1-common php8.1-zip php8.1-mbstring php8.1-curl php8.1-xml php8.1-bcmath php8.1-sqlite3 php8.1-gmp
+docker run --restart=unless-stopped -d -v $(pwd)/rrd:/root/rrd: -e MANAGEMENT_ADDRESS=... -e MANAGEMENT_PERCENTAGE=15 -e DELEGATOR_MIN_BALANCE=1 -e DELEGATOR_SAMPLING_INTERVAL=5 -e WALLET_ID=... -e ADDRESS=... -e NODE_RPC="http://localhost:7076" -e TIMEZONE=UTC representative-reward-distribution
 ```
 
-Download the last release of the binary (or compile it yourself) and copy it into the server.
-
-Copy it to `/usr/local/bin` and give it execution permission:
-
-```bash
-sudo cp paw-tribe /usr/local/bin
-sudo chmod +x /usr/local/bin
-```
-
-Execute the installer and give it all the needed info:
-```bash
-php8.1 /usr/local/bin/paw-tribe install
-```
+Where
+- `MANAGEMENT_ADDRESS` is the address of the wallet that will be used to send the management fee
+- `MANAGEMENT_PERCENTAGE` is the percentage of the rewards that will be sent to the management address
+- `DELEGATOR_MIN_BALANCE` is the minimum balance that a delegator must have to be rewarded
+- `DELEGATOR_SAMPLING_INTERVAL` is the interval in minutes between each balance sampling
+- `WALLET_ID` is the wallet ID of your representative node
+- `ADDRESS` is the address of your representative node
+- `NODE_RPC` is the RPC address of your representative node
+- `TIMEZONE` is the timezone of your server
 
 The wallet ID can be recovered from the `paw_node` executable using:
 ```bash
-paw_node --wallet_list
+nano_node --wallet_decrypt_unsafe --wallet YOUR_WALLET_ID
 ```
 
-Lastly add this to your crontab:
-```
-* * * * * cd /usr/local/bin && php paw-tribe schedule:run >> /dev/null 2>&1
-```
+Where `YOUR_WALLET_ID` is the wallet ID of your representative node.
 
 All set! Delegators will be rewarded after about 48h.
 
 ## Advanced configuration
 
-After the installation with the installer you will find a `.paw-tribe` directory containing the database and the config file. Customize it as you like!
+Some "advanced" config like banning and whitelisting are also available. To access them simply run a shell inside the running container:
 
-Some "advanced" config like banning and whitelisting are also available. To access them simply execute the binary:
 ```bash
-php8.1 /usr/local/bin/paw-tribe
+docker exec -it CONTAINER_ID sh
+```
+
+Where `CONTAINER_ID` is the ID of the running container. You can find it using:
+```bash
+docker ps
+```
+
+Once inside the container, you can obtain the list of available commands using:
+```bash
+php application
 ```
