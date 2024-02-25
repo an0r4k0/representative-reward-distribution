@@ -6,7 +6,7 @@ A simple tribe reward system: it will sample all the tribe delegators balances a
 
 Run the docker image with the following command:
 ```bash
-docker run --restart=unless-stopped -d -v $(pwd)/rrd:/root/rrd: -e MANAGEMENT_ADDRESS=... -e MANAGEMENT_PERCENTAGE=15 -e DELEGATOR_MIN_BALANCE=1 -e DELEGATOR_SAMPLING_INTERVAL=5 -e WALLET_ID=... -e ADDRESS=... -e NODE_RPC="http://localhost:7076" -e TIMEZONE=UTC representative-reward-distribution
+docker run --restart=unless-stopped -d -v $(pwd)/rrd:/root/rrd: -e MANAGEMENT_ADDRESS=... -e MANAGEMENT_PERCENTAGE=15 -e DELEGATOR_MIN_BALANCE=1 -e DELEGATOR_SAMPLING_INTERVAL=5 -e WALLET_ID=... -e ADDRESS=... -e NODE_RPC="http://localhost:7076" -e TIMEZONE=UTC an0r4k0/representative-reward-distribution:latest
 ```
 
 Where
