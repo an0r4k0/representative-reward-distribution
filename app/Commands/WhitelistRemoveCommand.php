@@ -19,7 +19,7 @@ class WhitelistRemoveCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Remove address to whitelist. If whitelist is not empty the only the addresses it contains will receive payouts';
+    protected $description = 'Remove address from whitelist. If whitelist is not empty the only the addresses it contains will receive payouts';
 
     /**
      * Execute the console command.
