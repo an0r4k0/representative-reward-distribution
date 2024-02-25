@@ -42,7 +42,7 @@ steps:
       repo: an0r4k0/representative-reward-distribution
       tags:
         - latest
-        - ${DRONE_TAG}
+        - ${DRONE_TAG:1}
     depends_on:
       - build
 
