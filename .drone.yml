@@ -20,20 +20,16 @@ steps:
       - name: cache
         path: /cache
 
-  - name: composer
-    image: composer:2
-    commands:
-      - composer install --ignore-platform-reqs --no-interaction
-    depends_on:
-      - restore-cache
-
   - name: build
     image: php:8.1-alpine
     commands:
-      - mkdir -p ./builds
+      - wget https://getcomposer.org/download/2.7.1/composer.phar
+      - mv composer.phar /usr/local/bin/composer
+      - chmod +x /usr/local/bin/composer
+      - composer install --ignore-platform-reqs --no-interaction
       - php application app:build --build-version=${DRONE_TAG}
     depends_on:
-      - composer
+      - restore-cache
 
   - name: build-docker-image
     image: plugins/docker

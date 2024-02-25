@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-set -euf
+#!/usr/bin/env sh
 
 # Migrate database
 mkdir -p rrd
