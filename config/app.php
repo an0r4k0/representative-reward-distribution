@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => 'RaiblocksOne Reward Distribution',
+    'name' => 'Representative Reward Distribution',
 
     /*
     |--------------------------------------------------------------------------
